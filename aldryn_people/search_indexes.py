@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
@@ -5,6 +6,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 
 from aldryn_search.utils import get_index_base, strip_tags
+from parler.utils.context import switch_language
 
 from .models import Person
 
@@ -31,4 +33,6 @@ class PeopleIndex(get_index_base()):
         return Person
 
     def get_search_data(self, obj, language, request):
-        return strip_tags(self.get_description(obj)).strip()
+        with switch_language(obj, language):
+            description = self.get_description(obj)
+        return strip_tags(description).strip()
